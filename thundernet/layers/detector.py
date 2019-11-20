@@ -134,8 +134,8 @@ class PSRoiAlignPooling(nn.Module):
             # shape [num_boxes, crop_height/spatial_bins_y, crop_width/spatial_bins_x, depth/total_bins]
 
             # do max pooling over spatial positions within the bin
-            crop_1 = torch.max(crop, dim=1, keepdim=False, out=None) #tf.reduce_max(crop, axis=[1, 2])
-            crop_2 = torch.max(crop, dim=2, keepdim=False, out=None)  # tf.reduce_max(crop, axis=[1, 2])
+            crop_1 = torch.max(crop, dim=1, keepdim=False, out=None) # tf.reduce_max(crop, axis=[1, 2])
+            crop_2 = torch.max(crop, dim=2, keepdim=False, out=None) # tf.reduce_max(crop, axis=[1, 2])
             crop = torch.stack(crop_1, crop_2)
             crop = crop.unsqueeze(1) #tf.expand_dims(crop, 1)
             # shape [num_boxes, 1, depth/total_bins]
@@ -159,7 +159,7 @@ class RPN(nn.Module):
         super(RPN).__init__()
         #rpn part
         self.conv1x1 = Conv1x1(in_channels=in_channels, out_channels=245, strides=1, groups=1)  # use_bias=True, name='sam/conv1x1')
-        self.depthwise_conv5x5 = DepthwiseConv5x5(channels=245,strides=1) #'rpn/conv5x5'
+        self.depthwise_conv5x5 = DepthwiseConv5x5(channels=245, stride=1) #'rpn/conv5x5'
         self.conv1x1 = Conv1x1(in_channels=in_channels2, out_channels=256, strides=1, groups=1)# use_bias=True, 'rpn/conv1x1'
         self.conv2   = nn.Conv2d(num_anchors, (1, 1))
         self.sigmoid = nn.Sigmoid() # kernel_initializer='uniform')#'rpn_out_class'
@@ -190,10 +190,10 @@ class RPN(nn.Module):
             x_regr: bboxes regression
             base_layers: snet in here
         """
-        x=self.depthwise_conv5x5(x)
-        x=self.conv1x1(x)
-        x_class=self.sigmoid(self.conv2(x))
-        x_regr =self.conv3(x)
+        x = self.depthwise_conv5x5(x)
+        x = self.conv1x1(x)
+        x_class = self.sigmoid(self.conv2(x))
+        x_regr  = self.conv3(x)
         return [x_class, x_regr] # , base_layers]
 
     def classifier(self, base_layers, input_rois, num_rois, nb_classes=3):

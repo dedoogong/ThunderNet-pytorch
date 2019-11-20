@@ -3,8 +3,9 @@ from thundernet.utils.common import Conv1x1, DepthwiseConv5x5, Conv1x1Block, Con
 import torch
 import torch.nn as nn
 from torch.nn import functional as F
+
 CEM_FILTER=245
-# INPUT : N H W C == 10 320 320 3a
+# INPUT : N H W C == 10 320 320 3
 class CEM(nn.Module):#Model):
     """Context Enhancement Module"""
     def __init__(self):
